@@ -1,0 +1,171 @@
+---
+title: "projeto_adm"
+format: html
+editor: visual
+---
+
+## PROJETO
+
+Projeto ADM
+
+Carregamento dos pacotes
+
+```{r}
+#| echo: true
+#| output: false
+#| warning: false
+#| error: false
+#| label: libraries
+# Libraries to use
+library("dplyr")
+# Check for missing packages and install them
+cran_pkgs <- c("foreign", "dplyr", "tidyr", "ggplot2", "psych", "corrplot", "scales")
+is_installed <- cran_pkgs %in% rownames(installed.packages())
+if(any(is_installed == FALSE)){
+  install.packages(cran_pkgs[!is_installed])
+}
+# Load packages
+lapply(cran_pkgs, library, character.only = TRUE) 
+```
+
+Abrimos o ficheiro .rds e depois apenas selecionamos os dados que tem a coluna cntry igual a Portugal.
+
+```{r}
+filename <- "C:/Users/user/Desktop/IGE/2º Ano/ADM/Projeto/ESS10_parcial_ADM_all_countries.rds"
+original <- readRDS(filename)
+only_portugal <- original[original$cntry == "Portugal",]
+```
+
+Recodificamos as variáveis marsts e edulvlb
+
+```{r}
+tabela_recodificada <- only_portugal %>%
+  mutate(
+    # --- Estado Civil ---
+    marsts = case_when(
+      marsts %in% c("Legally married", 
+                    "In a legally registered civil union") ~ "In relationship",
+      marsts %in% c("Legally separated", 
+                    "Legally divorced/Civil union dissolved", 
+                    "Widowed/Civil partner died") ~ "Formerly in relationship",
+      marsts == "None of these (NEVER married or in legally registered civil union)" ~ "Never in relationship",
+      TRUE ~ NA_character_ 
+    ),
+    
+    # --- Escolaridade ---
+    edulvlb = case_when(
+      edulvlb %in% c("Not completed ISCED level 1", 
+                     "ISCED 1, completed primary education", 
+                     "Vocational ISCED 2C < 2 years, no access ISCED 3", 
+                     "General/pre-vocational ISCED 2A/2B, access ISCED 3 vocational", 
+                     "General ISCED 2A, access ISCED 3A general/all 3", 
+                     "Vocational ISCED 2C >= 2 years, no access ISCED 3", 
+                     "Vocational ISCED 2A/2B, access ISCED 3 vocational", 
+                     "Vocational ISCED 2, access ISCED 3 general/all") ~ "EduLevel:Low",
+      
+      edulvlb %in% c("Vocational ISCED 3C < 2 years, no access ISCED 5", 
+                     "General ISCED 3 >=2 years, no access ISCED 5", 
+                     "General ISCED 3A/3B, access ISCED 5B/lower tier 5A", 
+                     "General ISCED 3A, access upper tier ISCED 5A/all 5", 
+                     "Vocational ISCED 3C >= 2 years, no access ISCED 5", 
+                     "Vocational ISCED 3A, access ISCED 5B/ lower tier 5A", 
+                     "Vocational ISCED 3A, access upper tier ISCED 5A/all 5", 
+                     "General ISCED 4A/4B, access ISCED 5B/lower tier 5A", 
+                     "General ISCED 4A, access upper tier ISCED 5A/all 5", 
+                     "ISCED 4 programmes without access ISCED 5", 
+                     "Vocational ISCED 4A/4B, access ISCED 5B/lower tier 5A", 
+                     "Vocational ISCED 4A, access upper tier ISCED 5A/all 5") ~ "EduLevel:Medium",
+      
+      edulvlb %in% c("ISCED 5A short, intermediate/academic/general tertiary below bachelor", 
+                     "ISCED 5B short, advanced vocational qualifications", 
+                     "ISCED 5A medium, bachelor/equivalent from lower tier tertiary", 
+                     "ISCED 5A medium, bachelor/equivalent from upper/single tier tertiary", 
+                     "ISCED 5A long, master/equivalent from lower tier tertiary", 
+                     "ISCED 5A long, master/equivalent from upper/single tier tertiary", 
+                     "ISCED 6, doctoral degree") ~ "EduLevel:High",
+      TRUE ~ NA_character_
+    )
+  )
+
+# Converter Variáveis para Tipos Corretos
+# Fatores
+tabela_recodificada$marsts <- 
+  factor(tabela_recodificada$marsts, levels = c("In relationship", 
+                                                "Formerly in relationship", 
+                                                "Never in relationship"))
+tabela_recodificada$edulvlb <- 
+  factor(tabela_recodificada$edulvlb, levels = c("EduLevel:Low", 
+                                                 "EduLevel:Medium", 
+                                                 "EduLevel:High"))
+
+tabela_recodificada$agea <- as.numeric(as.character(tabela_recodificada$agea))
+
+```
+
+## Parte 1 - Introdução e breve descrição dos inquiridos
+
+Idade (agea)
+
+```{r}
+# Principais medidas de tendência central e dispersão
+summary(tabela_recodificada$agea)
+print(paste("Desvio Padrão:", sd(tabela_recodificada$agea, na.rm = TRUE)))
+
+# Histograma
+ggplot(tabela_recodificada, aes(x = agea)) +
+  geom_histogram(binwidth = 5, fill = "#69b3a2", color = "white") +
+  labs(title = "Distribuição de Idades", 
+       x = "Idade", 
+       y = "Frequência") +
+  theme_minimal()
+```
+
+Género (gndr)
+
+```{r}
+# Tabela de frequências simples e percentagens
+tabela_genero <- table(tabela_recodificada$gndr)
+percentagens_genero <- prop.table(tabela_genero) * 100
+
+# Juntar numa tabela legível
+cbind(Frequencia = tabela_genero, Percentagem = round(percentagens_genero, 1))
+
+```
+
+Nível de escolaridade (edulvlb)
+
+```{r}
+# Filtramos os NAs para o gráfico ficar limpo
+tabela_recodificada %>%
+  filter(!is.na(edulvlb)) %>%
+  ggplot(aes(x = edulvlb)) +
+  geom_bar(fill = "steelblue") +
+  labs(title = "Nível de Escolaridade dos Respondentes", 
+       x = "Nível de Escolaridade", 
+       y = "Contagem") +
+  theme_minimal()
+```
+
+Estado civil (marsts)
+
+```{r}
+# Forçar que marsts seja apenas texto convertido em fator, sem atributos ocultos
+tabela_recodificada$marsts <- as.factor(as.character(tabela_recodificada$marsts))
+# Preparar dados para o Pie Chart
+df_pie <- tabela_recodificada %>%
+  filter(!is.na(marsts)) %>%
+  count(marsts) %>%
+  mutate(prop = n / sum(n) * 100) %>%
+  arrange(desc(marsts)) %>%             # Ordenar para alinhar as fatias
+  mutate(ypos = cumsum(prop) - 0.5 * prop) # Calcular posição do texto
+
+# Gerar o gráfico
+ggplot(df_pie, aes(x = "", y = prop, fill = marsts)) +
+  geom_bar(stat = "identity", width = 1, color = "white") +
+  coord_polar("y", start = 0) +
+  theme_void() + 
+  labs(title = "Estado Civil (Recodificado)", 
+       fill = "Estado Civil") +
+  geom_text(aes(y = ypos, label = paste0(round(prop, 1), "%")), 
+            color = "white", size = 4)
+```
