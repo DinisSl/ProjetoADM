@@ -285,12 +285,6 @@ ggplot(dados_final, aes(x = edulvlb, y = Seguranca, fill = edulvlb)) + geom_boxp
 ## Parte 4 - Indicador de Confiança Instituicional
 
 ```{r}
-
-library(dplyr)
-library(psych)
-library(corrplot)
-library(factoextra)
-
 # Selecionar variáveis de confiança institucional
 dados_conf <- dados_final %>% 
   select(trstprl, trstlgl, trstplc, trstplt, trstprt, trstep, trstun) %>% 
