@@ -285,41 +285,83 @@ ggplot(dados_final, aes(x = edulvlb, y = Seguranca, fill = edulvlb)) + geom_boxp
 ## Parte 4 - Indicador de Confiança Instituicional
 
 ```{r}
+# Selecionar variáveis de confiança institucional
+
 dados_conf <- dados_final %>% 
+
   select(trstprl, trstlgl, trstplc, trstplt, trstprt, trstep, trstun) %>% 
+
   drop_na()
 
-# ACP (1 dimensão apenas, sem rotação)
-pca_conf <- principal(dados_conf, nfactors = 1, rotate = "none")
+# Matriz de correlação
 
-# Guardar o score
-# O predict preenche automaticamente com NA nas linhas que tinham dados em falta
-dados_final$Confianca_Inst <- predict(pca_conf, dados_final %>% select(trstprl:trstun))[,1]
+cor_conf <- cor(dados_conf)
 
-# Resumo
-summary(dados_final$Confianca_Inst)
+corrplot(
 
-# O objeto 'pca_conf' tem lá dentro os valores em 'pca_conf$values'
-dados_scree <- data.frame(
-  Componente = 1:length(pca_conf$values),
-  Eigenvalue = pca_conf$values
+  cor_conf,
+
+  method = "color",
+
+  type = "upper",
+
+  diag = FALSE,
+
+  tl.col = "black"
+
 )
 
-# 2. Fazer o gráfico
-# 1. Preparar os dados para o gráfico
-# O pacote factoextra gosta de usar a função 'prcomp' para fazer o gráfico
-res_pca_grafico <- prcomp(dados_conf, scale = TRUE)
+# Teste KMO
 
-# 2. Fazer o gráfico bonito (fviz_eig)
-library(factoextra)
+KMO(dados_conf)
 
-fviz_eig(res_pca_grafico, 
-         addlabels = TRUE,       # Mostra as percentagens em cima das barras
-         ylim = c(0, 80),        # Ajusta a altura (podes mudar o 80 se precisares)
-         barfill = "#4E84C4",    # Cor das barras (Azul bonito)
-         barcolor = "#4E84C4",
-         linecolor = "black",    # Cor da linha
-         main = "Scree Plot - Confiança Institucional",
-         xlab = "Dimensões",
-         ylab = "Percentagem de Variância Explicada")
+# Teste de Bartlett
+
+cortest.bartlett(cor_conf, n = nrow(dados_conf))
+
+# Scree plot
+
+res_pca_grafico <- prcomp(dados_conf, scale. = TRUE)
+
+fviz_eig(
+
+  res_pca_grafico,
+
+  addlabels = TRUE,
+
+  ylim = c(0, 80)
+
+)
+
+# Análise em Componentes Principais (1 componente, sem rotação)
+
+pca_conf <- principal(
+
+  dados_conf,
+
+  nfactors = 1,
+
+  rotate = "none",
+
+  scores = TRUE
+
+)
+
+print(pca_conf$loadings, cutoff = 0.3)
+
+# Variância explicada
+
+pca_conf$Vaccounted
+
+# Criar o Indicador de Confiança Institucional
+
+dados_final$Confianca_Inst <- predict(
+
+  pca_conf,
+
+  dados_final %>% select(trstprl:trstun)
+
+)[,1]
+
+summary(dados_final$Confianca_Inst)
 ```
