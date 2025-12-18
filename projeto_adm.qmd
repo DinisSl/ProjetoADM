@@ -32,7 +32,7 @@ lapply(cran_pkgs, library, character.only = TRUE)
 Abrimos o ficheiro .rds e depois apenas selecionamos os dados que tem a coluna cntry igual a Portugal.
 
 ```{r}
-filename <- "C:/Users/user/Desktop/IGE/2º Ano/ADM/Projeto/ESS10_parcial_ADM_all_countries.rds"
+filename <- "C:/Users/alexa/Documents/GitHub/ProjetoADM/ESS10_parcial_ADM_all_countries.rds"
 original <- readRDS(filename)
 only_portugal <- original[original$cntry == "Portugal",]
 ```
@@ -238,7 +238,6 @@ Criamos um novo data frame para ser mais fácil trabalhar com os dados obtidos a
 scores <- data.frame(pca_resultado$scores)
 
 # 2. Dar nomes às colunas para facilitar (Baseado na tua ordem: RC1, RC2, RC3, RC4)
-# Podes mudar estes nomes se preferires outros, mas estes batem certo com a tua análise
 colnames(scores) <- c("Altruismo", "Hedonismo", "Conservadorismo", "Seguranca")
 
 # 3. Juntar tudo numa nova tabela para o exercício 3
@@ -281,4 +280,21 @@ modelo4 <- aov(Seguranca ~ edulvlb, data = dados_final)
 summary(modelo4)
 TukeyHSD(modelo4)
 ggplot(dados_final, aes(x = edulvlb, y = Seguranca, fill = edulvlb)) + geom_boxplot()
+```
+
+## Parte 4 - Indicador de Confiança Instituicional
+
+```{r}
+# Selecionar variáveis e remover NAs
+dados_conf <- dados_final %>% 
+  select(trstprl, trstigl, trstplc, trstplt, trstprt, trstep, trstun) %>% 
+  drop_na()
+
+# ACP (1 dimensão apenas, sem rotação)
+pca_conf <- principal(dados_conf, nfactors = 1, rotate = "none")
+
+dados_final$Confianca_Inst <- predict(pca_conf, dados_final %>% select(trstprl:trstun))[,1]
+
+# Ver resumo
+summary(dados_final$Confianca_Inst)
 ```
