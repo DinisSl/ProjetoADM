@@ -32,7 +32,7 @@ lapply(cran_pkgs, library, character.only = TRUE)
 Abrimos o ficheiro .rds e depois apenas selecionamos os dados que tem a coluna cntry igual a Portugal.
 
 ```{r}
-filename <- "C:/Users/alexa/Documents/GitHub/ProjetoADM/ESS10_parcial_ADM_all_countries.rds"
+filename <- "ESS10_parcial_ADM_all_countries.rds"
 original <- readRDS(filename)
 only_portugal <- original[original$cntry == "Portugal",]
 ```
