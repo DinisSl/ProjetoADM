@@ -285,16 +285,41 @@ ggplot(dados_final, aes(x = edulvlb, y = Seguranca, fill = edulvlb)) + geom_boxp
 ## Parte 4 - Indicador de Confiança Instituicional
 
 ```{r}
-# Selecionar variáveis e remover NAs
 dados_conf <- dados_final %>% 
-  select(trstprl, trstigl, trstplc, trstplt, trstprt, trstep, trstun) %>% 
+  select(trstprl, trstlgl, trstplc, trstplt, trstprt, trstep, trstun) %>% 
   drop_na()
 
 # ACP (1 dimensão apenas, sem rotação)
 pca_conf <- principal(dados_conf, nfactors = 1, rotate = "none")
 
+# Guardar o score
+# O predict preenche automaticamente com NA nas linhas que tinham dados em falta
 dados_final$Confianca_Inst <- predict(pca_conf, dados_final %>% select(trstprl:trstun))[,1]
 
-# Ver resumo
+# Resumo
 summary(dados_final$Confianca_Inst)
+
+# O objeto 'pca_conf' tem lá dentro os valores em 'pca_conf$values'
+dados_scree <- data.frame(
+  Componente = 1:length(pca_conf$values),
+  Eigenvalue = pca_conf$values
+)
+
+# 2. Fazer o gráfico
+# 1. Preparar os dados para o gráfico
+# O pacote factoextra gosta de usar a função 'prcomp' para fazer o gráfico
+res_pca_grafico <- prcomp(dados_conf, scale = TRUE)
+
+# 2. Fazer o gráfico bonito (fviz_eig)
+library(factoextra)
+
+fviz_eig(res_pca_grafico, 
+         addlabels = TRUE,       # Mostra as percentagens em cima das barras
+         ylim = c(0, 80),        # Ajusta a altura (podes mudar o 80 se precisares)
+         barfill = "#4E84C4",    # Cor das barras (Azul bonito)
+         barcolor = "#4E84C4",
+         linecolor = "black",    # Cor da linha
+         main = "Scree Plot - Confiança Institucional",
+         xlab = "Dimensões",
+         ylab = "Percentagem de Variância Explicada")
 ```
