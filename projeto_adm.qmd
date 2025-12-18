@@ -149,23 +149,130 @@ tabela_recodificada %>%
 Estado civil (marsts)
 
 ```{r}
-# Forçar que marsts seja apenas texto convertido em fator, sem atributos ocultos
-tabela_recodificada$marsts <- as.factor(as.character(tabela_recodificada$marsts))
-# Preparar dados para o Pie Chart
-df_pie <- tabela_recodificada %>%
-  filter(!is.na(marsts)) %>%
-  count(marsts) %>%
-  mutate(prop = n / sum(n) * 100) %>%
-  arrange(desc(marsts)) %>%             # Ordenar para alinhar as fatias
-  mutate(ypos = cumsum(prop) - 0.5 * prop) # Calcular posição do texto
+# Passar os dados da coluna marsts para carateres porque se não dá erro
+clean_marsts <- as.character(unlist(tabela_recodificada$marsts))
 
-# Gerar o gráfico
-ggplot(df_pie, aes(x = "", y = prop, fill = marsts)) +
+# Criamos um novo data frame
+df_clean <- data.frame(marsts = clean_marsts, stringsAsFactors = FALSE)
+
+pie_data <- df_clean %>%
+  filter(!is.na(marsts)) %>%
+  group_by(marsts) %>%
+  summarise(n = n()) %>%
+  mutate(
+    prop = n / sum(n) * 100,
+    ypos = cumsum(prop) - 0.5 * prop
+  )
+
+# Criar o gráfico setorial
+ggplot(pie_data, aes(x = "", y = prop, fill = marsts)) +
   geom_bar(stat = "identity", width = 1, color = "white") +
   coord_polar("y", start = 0) +
-  theme_void() + 
-  labs(title = "Estado Civil (Recodificado)", 
-       fill = "Estado Civil") +
-  geom_text(aes(y = ypos, label = paste0(round(prop, 1), "%")), 
-            color = "white", size = 4)
+  theme_void() +
+  geom_text(aes(y = ypos, label = paste0(round(prop, 1), "%")), color = "white", size = 5) +
+  scale_fill_brewer(palette = "Set2") +
+  labs(title = "Estado Civil (Recodificado)",
+       fill = "Situação")
+```
+
+## Parte 2 - Valores de Vida
+
+Matriz de correlação
+
+```{r}
+tabela_numerica <- select(tabela_recodificada, BeCreative:SeekFun)
+
+cor_matrix <- cor(tabela_numerica, use = "pairwise.complete.obs")
+
+corrplot(
+  cor_matrix,
+  method = "color",
+  type = "upper",
+  diag = FALSE,
+  tl.col = "black",
+  tl.cex = 0.7,
+  tl.srt = 45,
+  addCoef.col = "black",
+  number.cex = 0.55,
+  col = colorRampPalette(c("steelblue", "white", "tomato"))(200),
+  mar = c(0, 0, 3, 0)
+)
+title(main = "Correlation Matrix – Values", line = 1)
+```
+
+KMO
+
+```{r}
+KMO(tabela_numerica)
+```
+
+Teste de esfericidade de Bartlett
+
+```{r}
+cortest.bartlett(cor_matrix, n = nrow(tabela_numerica))
+```
+
+Análise de todos os valores próprios da matriz de correlação
+
+```{r}
+#| warning: false
+
+fviz_eig(princomp(cor_matrix,cor=TRUE), addlabels = TRUE, ylim = c(0, 50))
+# Para ver os valores exatos dos Eigenvalues:
+eigen(cor_matrix)$values
+```
+
+Modelo sem rotação
+
+```{r}
+pca_resultado <- principal(tabela_numerica, nfactors = 4, rotate = "varimax")
+
+print(pca_resultado$loadings, cutoff = 0.3, sort = TRUE)
+```
+
+## Parte 3 - Estarão os valores de vida relacionados com a escolaridade?  
+
+Criamos um novo data frame para ser mais fácil trabalhar com os dados obtidos acima com a ACP
+
+```{r}
+# 1. Transformar os resultados da PCA num data frame
+scores <- data.frame(pca_resultado$scores)
+
+# 2. Dar nomes às colunas para facilitar (Baseado na tua ordem: RC1, RC2, RC3, RC4)
+# Podes mudar estes nomes se preferires outros, mas estes batem certo com a tua análise
+colnames(scores) <- c("Altruismo", "Hedonismo", "Conservadorismo", "Seguranca")
+
+# 3. Juntar tudo numa nova tabela para o exercício 3
+dados_final <- cbind(tabela_recodificada, scores)
+```
+
+```{r}
+# PREPARAÇÃO DOS DADOS
+scores <- data.frame(pca_resultado$scores)
+colnames(scores) <- c("Altruismo", "Hedonismo", "Conservadorismo", "Seguranca")
+dados_final <- cbind(tabela_recodificada, scores)
+
+# 1. ALTRUÍSMO
+modelo1 <- aov(Altruismo ~ edulvlb, data = dados_final)
+summary(modelo1)
+TukeyHSD(modelo1)
+ggplot(dados_final, aes(x = edulvlb, y = Altruismo, fill = edulvlb)) + geom_boxplot()
+
+# 2. HEDONISMO
+modelo2 <- aov(Hedonismo ~ edulvlb, data = dados_final)
+summary(modelo2)
+TukeyHSD(modelo2)
+ggplot(dados_final, aes(x = edulvlb, y = Hedonismo, fill = edulvlb)) + geom_boxplot()
+
+# 3. CONSERVADORISMO
+modelo3 <- aov(Conservadorismo ~ edulvlb, data = dados_final)
+summary(modelo3)
+TukeyHSD(modelo3)
+ggplot(dados_final, aes(x = edulvlb, y = Conservadorismo, fill = edulvlb)) + geom_boxplot()
+
+# 4. SEGURANÇA
+modelo4 <- aov(Seguranca ~ edulvlb, data = dados_final)
+summary(modelo4)
+TukeyHSD(modelo4)
+ggplot(dados_final, aes(x = edulvlb, y = Seguranca, fill = edulvlb)) + geom_boxplot()
 ```
