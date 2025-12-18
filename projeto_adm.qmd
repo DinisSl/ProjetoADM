@@ -2,6 +2,8 @@
 title: "projeto_adm"
 format: html
 editor: visual
+execute:
+  warning: false
 ---
 
 ## PROJETO
@@ -13,13 +15,12 @@ Carregamento dos pacotes
 ```{r}
 #| echo: true
 #| output: false
-#| warning: false
 #| error: false
 #| label: libraries
 # Libraries to use
 library("dplyr")
 # Check for missing packages and install them
-cran_pkgs <- c("foreign", "dplyr", "tidyr", "ggplot2", "psych", "corrplot", "scales")
+cran_pkgs <- c("foreign", "dplyr", "tidyr", "ggplot2", "psych", "corrplot", "scales", "factoextra")
 is_installed <- cran_pkgs %in% rownames(installed.packages())
 if(any(is_installed == FALSE)){
   install.packages(cran_pkgs[!is_installed])
@@ -215,8 +216,6 @@ cortest.bartlett(cor_matrix, n = nrow(tabela_numerica))
 Análise de todos os valores próprios da matriz de correlação
 
 ```{r}
-#| warning: false
-
 fviz_eig(princomp(cor_matrix,cor=TRUE), addlabels = TRUE, ylim = c(0, 50))
 # Para ver os valores exatos dos Eigenvalues:
 eigen(cor_matrix)$values
@@ -230,7 +229,7 @@ pca_resultado <- principal(tabela_numerica, nfactors = 4, rotate = "varimax")
 print(pca_resultado$loadings, cutoff = 0.3, sort = TRUE)
 ```
 
-## Parte 3 - Estarão os valores de vida relacionados com a escolaridade?  
+## Parte 3 - Estarão os valores de vida relacionados com a escolaridade?
 
 Criamos um novo data frame para ser mais fácil trabalhar com os dados obtidos acima com a ACP
 
@@ -251,26 +250,33 @@ dados_final <- cbind(tabela_recodificada, scores)
 scores <- data.frame(pca_resultado$scores)
 colnames(scores) <- c("Altruismo", "Hedonismo", "Conservadorismo", "Seguranca")
 dados_final <- cbind(tabela_recodificada, scores)
-
+# -----------------------------------------------------------------------------
 # 1. ALTRUÍSMO
+# -----------------------------------------------------------------------------
 modelo1 <- aov(Altruismo ~ edulvlb, data = dados_final)
 summary(modelo1)
 TukeyHSD(modelo1)
 ggplot(dados_final, aes(x = edulvlb, y = Altruismo, fill = edulvlb)) + geom_boxplot()
 
+# -----------------------------------------------------------------------------
 # 2. HEDONISMO
+# -----------------------------------------------------------------------------
 modelo2 <- aov(Hedonismo ~ edulvlb, data = dados_final)
 summary(modelo2)
 TukeyHSD(modelo2)
 ggplot(dados_final, aes(x = edulvlb, y = Hedonismo, fill = edulvlb)) + geom_boxplot()
 
+# -----------------------------------------------------------------------------
 # 3. CONSERVADORISMO
+# -----------------------------------------------------------------------------
 modelo3 <- aov(Conservadorismo ~ edulvlb, data = dados_final)
 summary(modelo3)
 TukeyHSD(modelo3)
 ggplot(dados_final, aes(x = edulvlb, y = Conservadorismo, fill = edulvlb)) + geom_boxplot()
 
+# -----------------------------------------------------------------------------
 # 4. SEGURANÇA
+# -----------------------------------------------------------------------------
 modelo4 <- aov(Seguranca ~ edulvlb, data = dados_final)
 summary(modelo4)
 TukeyHSD(modelo4)
