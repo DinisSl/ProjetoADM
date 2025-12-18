@@ -285,12 +285,15 @@ ggplot(dados_final, aes(x = edulvlb, y = Seguranca, fill = edulvlb)) + geom_boxp
 ## Parte 4 - Indicador de Confiança Instituicional
 
 ```{r}
+
+library(dplyr)
+library(psych)
+library(corrplot)
+library(factoextra)
+
 # Selecionar variáveis de confiança institucional
-
 dados_conf <- dados_final %>% 
-
   select(trstprl, trstlgl, trstplc, trstplt, trstprt, trstep, trstun) %>% 
-
   drop_na()
 
 # Matriz de correlação
@@ -298,21 +301,14 @@ dados_conf <- dados_final %>%
 cor_conf <- cor(dados_conf)
 
 corrplot(
-
   cor_conf,
-
   method = "color",
-
   type = "upper",
-
   diag = FALSE,
-
   tl.col = "black"
-
 )
 
 # Teste KMO
-
 KMO(dados_conf)
 
 # Teste de Bartlett
@@ -324,29 +320,19 @@ cortest.bartlett(cor_conf, n = nrow(dados_conf))
 res_pca_grafico <- prcomp(dados_conf, scale. = TRUE)
 
 fviz_eig(
-
   res_pca_grafico,
-
   addlabels = TRUE,
-
   ylim = c(0, 80)
-
 )
 
 # Análise em Componentes Principais (1 componente, sem rotação)
 
 pca_conf <- principal(
-
   dados_conf,
-
   nfactors = 1,
-
   rotate = "none",
-
   scores = TRUE
-
 )
-
 print(pca_conf$loadings, cutoff = 0.3)
 
 # Variância explicada
@@ -356,11 +342,8 @@ pca_conf$Vaccounted
 # Criar o Indicador de Confiança Institucional
 
 dados_final$Confianca_Inst <- predict(
-
   pca_conf,
-
   dados_final %>% select(trstprl:trstun)
-
 )[,1]
 
 summary(dados_final$Confianca_Inst)
