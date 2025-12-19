@@ -285,6 +285,12 @@ ggplot(dados_final, aes(x = edulvlb, y = Seguranca, fill = edulvlb)) + geom_boxp
 ## Parte 4 - Indicador de Confiança Instituicional
 
 ```{r}
+
+library(dplyr)
+library(psych)
+library(corrplot)
+library(factoextra)
+
 # Selecionar variáveis de confiança institucional
 dados_conf <- dados_final %>% 
   select(trstprl, trstlgl, trstplc, trstplt, trstprt, trstep, trstun) %>% 
@@ -341,4 +347,100 @@ dados_final$Confianca_Inst <- predict(
 )[,1]
 
 summary(dados_final$Confianca_Inst)
+```
+
+## Parte 5 - Será a Confiança Institucional influenciada pelo nível de escolaridade e pelo género?
+
+```{r}
+# Usamos o símbolo '*' para testar efeitos principais e a interação
+modelo_confianca <- aov(Confianca_Inst ~ edulvlb * gndr, data = dados_final)
+
+# 2. Validação de Pressupostos
+# A. Homogeneidade de Variâncias (Teste de Levene)
+library(car)
+levene_result <- leveneTest(Confianca_Inst ~ edulvlb * gndr, data = dados_final)
+print(levene_result)
+
+# B. Normalidade dos Resíduos (Análise Gráfica)
+plot(modelo_confianca, which = 2) # Q-Q Plot
+
+# 3. Resultados da ANOVA
+summary(modelo_confianca)
+
+# 4. Testes Post-Hoc (Tukey) 
+# Apenas interpretamos se houver resultados significativos (p < 0.05)
+TukeyHSD(modelo_confianca)
+
+# 5. Visualização Gráfica (Gráfico de Interação)
+ggplot(dados_final %>% filter(!is.na(edulvlb), !is.na(gndr)), 
+       aes(x = edulvlb, y = Confianca_Inst, color = gndr, group = gndr)) +
+  stat_summary(fun = mean, geom = "point", size = 3) +
+  stat_summary(fun = mean, geom = "line") +
+  labs(title = "Confiança Institucional por Escolaridade e Género",
+       subtitle = "Análise de Interação",
+       x = "Nível de Escolaridade",
+       y = "Score de Confiança (Médias)") +
+  theme_minimal()
+```
+
+## Parte 6 - A felicidade depende dos valores?
+
+```{r}
+
+# 1. Preparação
+dados_limpos <- dados_final %>%
+  filter(!is.na(happy), !is.na(agea), !is.na(gndr), !is.na(marsts)) %>%
+  mutate(happy = as.numeric(as.character(happy)))
+
+# 2. Modelo 1: Apenas Valores
+modelo1_feli <- lm(happy ~ Altruismo + Hedonismo + Conservadorismo + Seguranca, 
+                   data = dados_limpos)
+
+# 3. Modelo 2: Valores + Demográficas (Idade, Género, Estado Civil)
+modelo2_feli <- lm(happy ~ Altruismo + Hedonismo + Conservadorismo + Seguranca + 
+                   agea + gndr + marsts, 
+                   data = dados_limpos)
+
+# 4. Agora o ANOVA e o SUMMARY já vão funcionar sem erros
+summary(modelo2_feli)
+anova(modelo1_feli, modelo2_feli)
+
+# 5. Validação de Pressupostos
+par(mfrow = c(2, 2))
+plot(modelo2_feli)
+```
+
+## Parte 7 - Existem padrões nos valores?(Análise de clusters)
+
+```{r}
+# 1. Selecionar as variáveis de agrupamento (os scores da ACP) e remover NAs
+dados_clusters <- dados_final %>%
+  select(Altruismo, Hedonismo, Conservadorismo, Seguranca, 
+         agea, gndr, edulvlb, marsts) %>%
+  na.omit()
+
+# 2. Determinar o número ideal de clusters (Método de Elbow)
+fviz_nbclust(dados_clusters[,1:4], kmeans, method = "wss") +
+  labs(title = "Método de Elbow para Seleção de Clusters")
+
+# 3. Executar o K-means
+set.seed(123) # Para resultados reproduzíveis
+k_resultado <- kmeans(dados_clusters[,1:4], centers = 3, nstart = 25)
+
+# 4. Adicionar o cluster ao dataset
+dados_clusters$cluster <- as.factor(k_resultado$cluster)
+
+# 5. Caraterização dos Grupos (Médias dos Valores)
+aggregate(dados_clusters[,1:4], by=list(cluster=dados_clusters$cluster), mean)
+
+# 6. Caraterização Sociodemográfica (Cruzamentos)
+# Idade média por cluster
+aggregate(agea ~ cluster, data = dados_clusters, mean)
+
+# Distribuição de Escolaridade por cluster
+table(dados_clusters$cluster, dados_clusters$edulvlb) %>% prop.table(margin = 1) * 100
+
+# Visualização dos Clusters
+fviz_cluster(k_resultado, data = dados_clusters[,1:4], geom = "point", 
+             ellipse.type = "convex", main = "Perfis de Valores em Portugal")
 ```
