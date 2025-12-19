@@ -286,11 +286,6 @@ ggplot(dados_final, aes(x = edulvlb, y = Seguranca, fill = edulvlb)) + geom_boxp
 
 ```{r}
 
-library(dplyr)
-library(psych)
-library(corrplot)
-library(factoextra)
-
 # Selecionar variáveis de confiança institucional
 dados_conf <- dados_final %>% 
   select(trstprl, trstlgl, trstplc, trstplt, trstprt, trstep, trstun) %>% 
