@@ -117,7 +117,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Abrimos o ficheiro .rds e depois apenas selecionamos os dados que tem a coluna cntry igual a Portugal.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>filename <span class="ot">&lt;-</span> <span class="st">"C:/Users/user/Desktop/IGE/2º Ano/ADM/Projeto/ESS10_parcial_ADM_all_countries.rds"</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>filename <span class="ot">&lt;-</span> <span class="st">"ESS10_parcial_ADM_all_countries.rds"</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>original <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(filename)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>only_portugal <span class="ot">&lt;-</span> original[original<span class="sc">$</span>cntry <span class="sc">==</span> <span class="st">"Portugal"</span>,]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -412,11 +412,10 @@ Cumulative Var 0.18 0.342 0.442 0.510</code></pre>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>scores <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(pca_resultado<span class="sc">$</span>scores)</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Dar nomes às colunas para facilitar (Baseado na tua ordem: RC1, RC2, RC3, RC4)</span></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Podes mudar estes nomes se preferires outros, mas estes batem certo com a tua análise</span></span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(scores) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Altruismo"</span>, <span class="st">"Hedonismo"</span>, <span class="st">"Conservadorismo"</span>, <span class="st">"Seguranca"</span>)</span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Juntar tudo numa nova tabela para o exercício 3</span></span>
-<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>dados_final <span class="ot">&lt;-</span> <span class="fu">cbind</span>(tabela_recodificada, scores)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(scores) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Altruismo"</span>, <span class="st">"Hedonismo"</span>, <span class="st">"Conservadorismo"</span>, <span class="st">"Seguranca"</span>)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Juntar tudo numa nova tabela para o exercício 3</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>dados_final <span class="ot">&lt;-</span> <span class="fu">cbind</span>(tabela_recodificada, scores)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># PREPARAÇÃO DOS DADOS</span></span>
@@ -554,6 +553,367 @@ EduLevel:High-EduLevel:Medium  0.07394326 -0.09105997 0.23894649 0.5446592</code
 <div>
 <figure class="figure">
 <p><img src="projeto_adm_files/figure-html/unnamed-chunk-13-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="parte-4---indicador-de-confiança-instituicional" class="level2">
+<h2 class="anchored" data-anchor-id="parte-4---indicador-de-confiança-instituicional">Parte 4 - Indicador de Confiança Instituicional</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Selecionar variáveis de confiança institucional</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>dados_conf <span class="ot">&lt;-</span> dados_final <span class="sc">%&gt;%</span> </span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(trstprl, trstlgl, trstplc, trstplt, trstprt, trstep, trstun) <span class="sc">%&gt;%</span> </span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>()</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Matriz de correlação</span></span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>cor_conf <span class="ot">&lt;-</span> <span class="fu">cor</span>(dados_conf)</span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot</span>(</span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a>  cor_conf,</span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"color"</span>,</span>
+<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"upper"</span>,</span>
+<span id="cb44-14"><a href="#cb44-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">diag =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb44-15"><a href="#cb44-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">tl.col =</span> <span class="st">"black"</span></span>
+<span id="cb44-16"><a href="#cb44-16" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="projeto_adm_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Teste KMO</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">KMO</span>(dados_conf)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Kaiser-Meyer-Olkin factor adequacy
+Call: KMO(r = dados_conf)
+Overall MSA =  0.84
+MSA for each item = 
+trstprl trstlgl trstplc trstplt trstprt  trstep  trstun 
+   0.92    0.91    0.90    0.78    0.78    0.83    0.82 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Teste de Bartlett</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cortest.bartlett</span>(cor_conf, <span class="at">n =</span> <span class="fu">nrow</span>(dados_conf))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$chisq
+[1] 6472.089
+
+$p.value
+[1] 0
+
+$df
+[1] 21</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Scree plot</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>res_pca_grafico <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(dados_conf, <span class="at">scale. =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_eig</span>(</span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>  res_pca_grafico,</span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">addlabels =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">80</span>)</span>
+<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="projeto_adm_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Análise em Componentes Principais (1 componente, sem rotação)</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>pca_conf <span class="ot">&lt;-</span> <span class="fu">principal</span>(</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>  dados_conf,</span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">nfactors =</span> <span class="dv">1</span>,</span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">rotate =</span> <span class="st">"none"</span>,</span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">scores =</span> <span class="cn">TRUE</span></span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(pca_conf<span class="sc">$</span>loadings, <span class="at">cutoff =</span> <span class="fl">0.3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Loadings:
+        PC1  
+trstprl 0.815
+trstlgl 0.755
+trstplc 0.565
+trstplt 0.848
+trstprt 0.841
+trstep  0.821
+trstun  0.738
+
+                 PC1
+SS loadings    4.196
+Proportion Var 0.599</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Variância explicada</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>pca_conf<span class="sc">$</span>Vaccounted</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     PC1
+SS loadings    4.1962922
+Proportion Var 0.5994703</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Criar o Indicador de Confiança Institucional</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>dados_final<span class="sc">$</span>Confianca_Inst <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>  pca_conf,</span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>  dados_final <span class="sc">%&gt;%</span> <span class="fu">select</span>(trstprl<span class="sc">:</span>trstun)</span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>)[,<span class="dv">1</span>]</span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(dados_final<span class="sc">$</span>Confianca_Inst)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Min.  1st Qu.   Median     Mean  3rd Qu.     Max.     NA's 
+-2.37268 -0.65280  0.07954  0.01894  0.74962  2.97140      305 </code></pre>
+</div>
+</div>
+</section>
+<section id="parte-5---será-a-confiança-institucional-influenciada-pelo-nível-de-escolaridade-e-pelo-género" class="level2">
+<h2 class="anchored" data-anchor-id="parte-5---será-a-confiança-institucional-influenciada-pelo-nível-de-escolaridade-e-pelo-género">Parte 5 - Será a Confiança Institucional influenciada pelo nível de escolaridade e pelo género?</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Usamos o símbolo '*' para testar efeitos principais e a interação</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>modelo_confianca <span class="ot">&lt;-</span> <span class="fu">aov</span>(Confianca_Inst <span class="sc">~</span> edulvlb <span class="sc">*</span> gndr, <span class="at">data =</span> dados_final)</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Validação de Pressupostos</span></span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a><span class="co"># A. Homogeneidade de Variâncias (Teste de Levene)</span></span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>levene_result <span class="ot">&lt;-</span> <span class="fu">leveneTest</span>(Confianca_Inst <span class="sc">~</span> edulvlb <span class="sc">*</span> gndr, <span class="at">data =</span> dados_final)</span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(levene_result)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Levene's Test for Homogeneity of Variance (center = median)
+        Df F value  Pr(&gt;F)  
+group    5  2.8312 0.01496 *
+      1527                  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="co"># B. Normalidade dos Resíduos (Análise Gráfica)</span></span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(modelo_confianca, <span class="at">which =</span> <span class="dv">2</span>) <span class="co"># Q-Q Plot</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="projeto_adm_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Resultados da ANOVA</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_confianca)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>               Df Sum Sq Mean Sq F value Pr(&gt;F)    
+edulvlb         2  113.9   56.96  62.380 &lt;2e-16 ***
+gndr            1    1.0    0.98   1.076  0.300    
+edulvlb:gndr    2    4.0    1.99   2.179  0.113    
+Residuals    1527 1394.3    0.91                   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+305 observations deleted due to missingness</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Testes Post-Hoc (Tukey) </span></span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Apenas interpretamos se houver resultados significativos (p &lt; 0.05)</span></span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a><span class="fu">TukeyHSD</span>(modelo_confianca)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Tukey multiple comparisons of means
+    95% family-wise confidence level
+
+Fit: aov(formula = Confianca_Inst ~ edulvlb * gndr, data = dados_final)
+
+$edulvlb
+                                   diff       lwr       upr    p adj
+EduLevel:Medium-EduLevel:Low  0.3537866 0.2177492 0.4898240 0.00e+00
+EduLevel:High-EduLevel:Low    0.6679784 0.5239406 0.8120162 0.00e+00
+EduLevel:High-EduLevel:Medium 0.3141918 0.1534618 0.4749217 1.46e-05
+
+$gndr
+                   diff        lwr        upr     p adj
+Female-Male -0.05091719 -0.1473054 0.04547106 0.3002849
+
+$`edulvlb:gndr`
+                                                   diff         lwr         upr
+EduLevel:Medium:Male-EduLevel:Low:Male       0.43221416  0.18534624  0.67908208
+EduLevel:High:Male-EduLevel:Low:Male         0.81411681  0.54415497  1.08407865
+EduLevel:Low:Female-EduLevel:Low:Male        0.04571361 -0.15420138  0.24562859
+EduLevel:Medium:Female-EduLevel:Low:Male     0.33567346  0.10550498  0.56584194
+EduLevel:High:Female-EduLevel:Low:Male       0.61003979  0.37231758  0.84776200
+EduLevel:High:Male-EduLevel:Medium:Male      0.38190265  0.08090057  0.68290474
+EduLevel:Low:Female-EduLevel:Medium:Male    -0.38650055 -0.62668561 -0.14631549
+EduLevel:Medium:Female-EduLevel:Medium:Male -0.09654070 -0.36243615  0.16935475
+EduLevel:High:Female-EduLevel:Medium:Male    0.17782563 -0.09463483  0.45028610
+EduLevel:Low:Female-EduLevel:High:Male      -0.76840320 -1.03226773 -0.50453868
+EduLevel:Medium:Female-EduLevel:High:Male   -0.47844335 -0.76590816 -0.19097854
+EduLevel:High:Female-EduLevel:High:Male     -0.20407702 -0.49762486  0.08947082
+EduLevel:Medium:Female-EduLevel:Low:Female   0.28995985  0.06697415  0.51294555
+EduLevel:High:Female-EduLevel:Low:Female     0.56432618  0.33355153  0.79510083
+EduLevel:High:Female-EduLevel:Medium:Female  0.27436633  0.01693971  0.53179296
+                                                p adj
+EduLevel:Medium:Male-EduLevel:Low:Male      0.0000097
+EduLevel:High:Male-EduLevel:Low:Male        0.0000000
+EduLevel:Low:Female-EduLevel:Low:Male       0.9868620
+EduLevel:Medium:Female-EduLevel:Low:Male    0.0004779
+EduLevel:High:Female-EduLevel:Low:Male      0.0000000
+EduLevel:High:Male-EduLevel:Medium:Male     0.0041108
+EduLevel:Low:Female-EduLevel:Medium:Male    0.0000697
+EduLevel:Medium:Female-EduLevel:Medium:Male 0.9058058
+EduLevel:High:Female-EduLevel:Medium:Male   0.4260476
+EduLevel:Low:Female-EduLevel:High:Male      0.0000000
+EduLevel:Medium:Female-EduLevel:High:Male   0.0000329
+EduLevel:High:Female-EduLevel:High:Male     0.3521442
+EduLevel:Medium:Female-EduLevel:Low:Female  0.0029349
+EduLevel:High:Female-EduLevel:Low:Female    0.0000000
+EduLevel:High:Female-EduLevel:Medium:Female 0.0288932</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Visualização Gráfica (Gráfico de Interação)</span></span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dados_final <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(edulvlb), <span class="sc">!</span><span class="fu">is.na</span>(gndr)), </span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> edulvlb, <span class="at">y =</span> Confianca_Inst, <span class="at">color =</span> gndr, <span class="at">group =</span> gndr)) <span class="sc">+</span></span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"point"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"line"</span>) <span class="sc">+</span></span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Confiança Institucional por Escolaridade e Género"</span>,</span>
+<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Análise de Interação"</span>,</span>
+<span id="cb63-8"><a href="#cb63-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Nível de Escolaridade"</span>,</span>
+<span id="cb63-9"><a href="#cb63-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Score de Confiança (Médias)"</span>) <span class="sc">+</span></span>
+<span id="cb63-10"><a href="#cb63-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="projeto_adm_files/figure-html/unnamed-chunk-15-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="parte-6---a-felicidade-depende-dos-valores" class="level2">
+<h2 class="anchored" data-anchor-id="parte-6---a-felicidade-depende-dos-valores">Parte 6 - A felicidade depende dos valores?</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Preparação</span></span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>dados_limpos <span class="ot">&lt;-</span> dados_final <span class="sc">%&gt;%</span></span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(happy), <span class="sc">!</span><span class="fu">is.na</span>(agea), <span class="sc">!</span><span class="fu">is.na</span>(gndr), <span class="sc">!</span><span class="fu">is.na</span>(marsts)) <span class="sc">%&gt;%</span></span>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">happy =</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(happy)))</span>
+<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Modelo 1: Apenas Valores</span></span>
+<span id="cb64-7"><a href="#cb64-7" aria-hidden="true" tabindex="-1"></a>modelo1_feli <span class="ot">&lt;-</span> <span class="fu">lm</span>(happy <span class="sc">~</span> Altruismo <span class="sc">+</span> Hedonismo <span class="sc">+</span> Conservadorismo <span class="sc">+</span> Seguranca, </span>
+<span id="cb64-8"><a href="#cb64-8" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> dados_limpos)</span>
+<span id="cb64-9"><a href="#cb64-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-10"><a href="#cb64-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Modelo 2: Valores + Demográficas (Idade, Género, Estado Civil)</span></span>
+<span id="cb64-11"><a href="#cb64-11" aria-hidden="true" tabindex="-1"></a>modelo2_feli <span class="ot">&lt;-</span> <span class="fu">lm</span>(happy <span class="sc">~</span> Altruismo <span class="sc">+</span> Hedonismo <span class="sc">+</span> Conservadorismo <span class="sc">+</span> Seguranca <span class="sc">+</span> </span>
+<span id="cb64-12"><a href="#cb64-12" aria-hidden="true" tabindex="-1"></a>                   agea <span class="sc">+</span> gndr <span class="sc">+</span> marsts, </span>
+<span id="cb64-13"><a href="#cb64-13" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> dados_limpos)</span>
+<span id="cb64-14"><a href="#cb64-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-15"><a href="#cb64-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Agora o ANOVA e o SUMMARY já vão funcionar sem erros</span></span>
+<span id="cb64-16"><a href="#cb64-16" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo2_feli)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = happy ~ Altruismo + Hedonismo + Conservadorismo + 
+    Seguranca + agea + gndr + marsts, data = dados_limpos)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-7.0018 -1.2116  0.2497  1.3663  4.5053 
+
+Coefficients:
+                               Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)                     7.91883    0.39200  20.201  &lt; 2e-16 ***
+Altruismo                       0.12120    0.06541   1.853  0.06421 .  
+Hedonismo                       0.33789    0.07082   4.771 2.13e-06 ***
+Conservadorismo                -0.04682    0.06304  -0.743  0.45785    
+Seguranca                      -0.08712    0.06377  -1.366  0.17220    
+agea                           -0.01552    0.00478  -3.247  0.00121 ** 
+gndrFemale                     -0.25535    0.13249  -1.927  0.05425 .  
+marstsFormerly in relationship -0.53263    0.32570  -1.635  0.10231    
+marstsNever in relationship    -0.13923    0.31816  -0.438  0.66177    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.932 on 935 degrees of freedom
+  (51 observations deleted due to missingness)
+Multiple R-squared:  0.1383,    Adjusted R-squared:  0.131 
+F-statistic: 18.76 on 8 and 935 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(modelo1_feli, modelo2_feli)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Model 1: happy ~ Altruismo + Hedonismo + Conservadorismo + Seguranca
+Model 2: happy ~ Altruismo + Hedonismo + Conservadorismo + Seguranca + 
+    agea + gndr + marsts
+  Res.Df    RSS Df Sum of Sq      F   Pr(&gt;F)    
+1    939 3670.5                                 
+2    935 3489.7  4    180.76 12.108 1.34e-09 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Validação de Pressupostos</span></span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(modelo2_feli)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="projeto_adm_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="parte-7---existem-padrões-nos-valoresanálise-de-clusters" class="level2">
+<h2 class="anchored" data-anchor-id="parte-7---existem-padrões-nos-valoresanálise-de-clusters">Parte 7 - Existem padrões nos valores?(Análise de clusters)</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Selecionar as variáveis de agrupamento (os scores da ACP) e remover NAs</span></span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>dados_clusters <span class="ot">&lt;-</span> dados_final <span class="sc">%&gt;%</span></span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Altruismo, Hedonismo, Conservadorismo, Seguranca, </span>
+<span id="cb69-4"><a href="#cb69-4" aria-hidden="true" tabindex="-1"></a>         agea, gndr, edulvlb, marsts) <span class="sc">%&gt;%</span></span>
+<span id="cb69-5"><a href="#cb69-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>()</span>
+<span id="cb69-6"><a href="#cb69-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-7"><a href="#cb69-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Determinar o número ideal de clusters (Método de Elbow)</span></span>
+<span id="cb69-8"><a href="#cb69-8" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_nbclust</span>(dados_clusters[,<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>], kmeans, <span class="at">method =</span> <span class="st">"wss"</span>) <span class="sc">+</span></span>
+<span id="cb69-9"><a href="#cb69-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Método de Elbow para Seleção de Clusters"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="projeto_adm_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Executar o K-means</span></span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>) <span class="co"># Para resultados reproduzíveis</span></span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a>k_resultado <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(dados_clusters[,<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>], <span class="at">centers =</span> <span class="dv">3</span>, <span class="at">nstart =</span> <span class="dv">25</span>)</span>
+<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Adicionar o cluster ao dataset</span></span>
+<span id="cb70-6"><a href="#cb70-6" aria-hidden="true" tabindex="-1"></a>dados_clusters<span class="sc">$</span>cluster <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(k_resultado<span class="sc">$</span>cluster)</span>
+<span id="cb70-7"><a href="#cb70-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-8"><a href="#cb70-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Caraterização dos Grupos (Médias dos Valores)</span></span>
+<span id="cb70-9"><a href="#cb70-9" aria-hidden="true" tabindex="-1"></a><span class="fu">aggregate</span>(dados_clusters[,<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>], <span class="at">by=</span><span class="fu">list</span>(<span class="at">cluster=</span>dados_clusters<span class="sc">$</span>cluster), mean)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  cluster  Altruismo  Hedonismo Conservadorismo   Seguranca
+1       1  0.5219931  0.2783883     -1.29109980 -0.24580809
+2       2 -0.6083609 -0.8113982      0.03043736 -0.05866757
+3       3  0.2960436  0.7706260      0.62167992  0.26646923</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 6. Caraterização Sociodemográfica (Cruzamentos)</span></span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Idade média por cluster</span></span>
+<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a><span class="fu">aggregate</span>(agea <span class="sc">~</span> cluster, <span class="at">data =</span> dados_clusters, mean)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  cluster     agea
+1       1 40.94863
+2       2 61.34259
+3       3 46.75000</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Distribuição de Escolaridade por cluster</span></span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dados_clusters<span class="sc">$</span>cluster, dados_clusters<span class="sc">$</span>edulvlb) <span class="sc">%&gt;%</span> <span class="fu">prop.table</span>(<span class="at">margin =</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="dv">100</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   
+    EduLevel:Low EduLevel:Medium EduLevel:High
+  1     29.45205        33.90411      36.64384
+  2     70.67901        16.97531      12.34568
+  3     49.39759        31.02410      19.57831</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualização dos Clusters</span></span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_cluster</span>(k_resultado, <span class="at">data =</span> dados_clusters[,<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>], <span class="at">geom =</span> <span class="st">"point"</span>, </span>
+<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">ellipse.type =</span> <span class="st">"convex"</span>, <span class="at">main =</span> <span class="st">"Perfis de Valores em Portugal"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="projeto_adm_files/figure-html/unnamed-chunk-17-2.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
